@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database ERD — English Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F1E8;
+      --canvas-bg: #FAF7F0;
+      --text: #1F1D1A;
+      --text-muted: #706B62;
+      --text-soft: #9C968B;
+      --border: #D8D0BD;
+      --grid: rgba(168, 158, 138, 0.12);
+
+      --user-c: #3D5A7C;
+      --user-tint: #E2EAF1;
+      --quiz-c: #5C7A4E;
+      --quiz-tint: #E5EDDF;
+      --words-c: #B05E2E;
+      --words-tint: #F4E5D2;
+      --game-c: #6B4878;
+      --game-tint: #EADCEF;
+
+      --pk-bg: #FEF3D7;
+      --pk-tx: #7A5710;
+      --fk-bg: #E3EDF7;
+      --fk-tx: #2B4D72;
+      --uk-bg: #E5F0DE;
+      --uk-tx: #3D5E27;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 40px 32px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1.0;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+      font-variation-settings: "opsz" 144;
+    }
+
+    h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-muted);
+    }
+
+    .lede {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* Legend */
+    .legend {
+      max-width: 1200px;
+      margin: 32px auto 24px;
+      padding: 20px 32px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .legend-group {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .legend-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+    }
+
+    .key-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+
+    .pk { background: var(--pk-bg); color: var(--pk-tx); }
+    .fk { background: var(--fk-bg); color: var(--fk-tx); }
+    .uk { background: var(--uk-bg); color: var(--uk-tx); }
+
+    .domain-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+    }
+
+    .sw-user { background: var(--user-c); }
+    .sw-quiz { background: var(--quiz-c); }
+    .sw-words { background: var(--words-c); }
+    .sw-game { background: var(--game-c); }
+
+    /* Canvas */
+    .canvas-wrapper {
+      width: 100%;
+      overflow: auto;
+      background: var(--canvas-bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 40px;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 32px 32px;
+      background-position: -1px -1px;
+    }
+
+    #erd-svg {
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* SVG styles */
+    .table-bg {
+      fill: white;
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+
+    .table-header {
+      stroke: none;
+    }
+
+    .table-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      dominant-baseline: central;
+    }
+
+    .table-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      fill: rgba(0,0,0,0.5);
+      dominant-baseline: central;
+    }
+
+    .field-row-bg {
+      stroke: none;
+    }
+
+    .field-row-bg.alt {
+      fill: #FAF7F0;
+    }
+
+    .field-row-bg.normal {
+      fill: white;
+    }
+
+    .field-name-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      fill: var(--text);
+      font-weight: 500;
+      dominant-baseline: central;
+    }
+
+    .field-type-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      fill: var(--text-soft);
+      dominant-baseline: central;
+      text-anchor: end;
+    }
+
+    .key-rect {
+      stroke: none;
+    }
+
+    .key-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      dominant-baseline: central;
+      text-anchor: middle;
+      letter-spacing: 0.05em;
+    }
+
+    /* Connection lines */
+    .conn-path {
+      fill: none;
+      stroke: #A89E8A;
+      stroke-width: 1.2;
+      opacity: 0.6;
+      transition: opacity 0.2s, stroke-width 0.2s;
+    }
+
+    .conn-dot {
+      fill: #A89E8A;
+      opacity: 0.7;
+    }
+
+    /* Hover effects */
+    .table-group:hover .table-bg {
+      stroke: var(--text-muted);
+      stroke-width: 1.5;
+    }
+
+    footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+      text-align: center;
+      color: var(--text-muted);
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 14px;
+    }
+
+    @media print {
+      body { background: white; }
+      .canvas-wrapper { overflow: visible; background: white; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="eyebrow">ENTITY RELATIONSHIP DIAGRAM</div>
+    <h1>Database <em>schema</em></h1>
+    <p class="lede">17 ta jadval, ularning maydonlari va o'zaro bog'lanishlari</p>
+  </header>
+
+  <div class="legend">
+    <div class="legend-group">
+      <div class="legend-item"><span class="key-badge pk">PK</span> Primary Key</div>
+      <div class="legend-item"><span class="key-badge fk">FK</span> Foreign Key</div>
+      <div class="legend-item"><span class="key-badge uk">UK</span> Unique</div>
+    </div>
+    <div class="legend-sep"></div>
+    <div class="legend-group">
+      <div class="legend-item"><span class="domain-swatch sw-user"></span> User</div>
+      <div class="legend-item"><span class="domain-swatch sw-quiz"></span> Quiz</div>
+      <div class="legend-item"><span class="domain-swatch sw-words"></span> Words</div>
+      <div class="legend-item"><span class="domain-swatch sw-game"></span> Gamification</div>
+    </div>
+  </div>
+
+  <div class="canvas-wrapper">
+    <svg id="erd-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <footer>
+    English Learning Platform — Database Schema, dbdiagram view
+  </footer>
+
+  <script>
+    // ─────────────── DATA ───────────────
+
+    const DOMAIN_COLORS = {
+      user:  { bg: '#3D5A7C', tint: '#E2EAF1', text: '#1F2D40' },
+      quiz:  { bg: '#5C7A4E', tint: '#E5EDDF', text: '#243017' },
+      words: { bg: '#B05E2E', tint: '#F4E5D2', text: '#3D2110' },
+      game:  { bg: '#6B4878', tint: '#EADCEF', text: '#2D1B36' }
+    };
+
+    const tables = [
+      // ─── COLUMN 1 (x=40) ─── Quiz cluster
+      {
+        name: 'categories', domain: 'quiz', x: 40, y: 40,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'name', type: 'string' },
+          { name: 'name_uz', type: 'string' },
+          { name: 'icon_url', type: 'string' },
+          { name: 'color', type: 'string' },
+          { name: 'description', type: 'text' }
+        ]
+      },
+      {
+        name: 'quizzes', domain: 'quiz', x: 40, y: 260,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'category_id', type: 'int', key: 'FK' },
+          { name: 'title', type: 'string' },
+          { name: 'description', type: 'text' },
+          { name: 'english_level', type: 'enum' },
+          { name: 'min_user_level', type: 'int' },
+          { name: 'passing_score', type: 'int' },
+          { name: 'exp_reward', type: 'int' },
+          { name: 'time_limit_sec', type: 'int' },
+          { name: 'question_count', type: 'int' },
+          { name: 'allow_retry', type: 'bool' },
+          { name: 'is_active', type: 'bool' },
+          { name: 'created_at', type: 'timestamp' }
+        ]
+      },
+      {
+        name: 'questions', domain: 'quiz', x: 40, y: 700,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'quiz_id', type: 'int', key: 'FK' },
+          { name: 'question_text', type: 'text' },
+          { name: 'question_type', type: 'enum' },
+          { name: 'difficulty', type: 'int' },
+          { name: 'audio_url', type: 'string' },
+          { name: 'image_url', type: 'string' },
+          { name: 'explanation', type: 'text' },
+          { name: 'order_index', type: 'int' }
+        ]
+      },
+      {
+        name: 'question_options', domain: 'quiz', x: 40, y: 1020,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'question_id', type: 'int', key: 'FK' },
+          { name: 'option_text', type: 'text' },
+          { name: 'is_correct', type: 'bool' },
+          { name: 'order_index', type: 'int' }
+        ]
+      },
+
+      // ─── COLUMN 2 (x=400) ─── Quiz attempts + Users
+      {
+        name: 'quiz_attempts', domain: 'quiz', x: 400, y: 40,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'user_id', type: 'int', key: 'FK' },
+          { name: 'quiz_id', type: 'int', key: 'FK' },
+          { name: 'score', type: 'int' },
+          { name: 'total_questions', type: 'int' },
+          { name: 'exp_earned', type: 'int' },
+          { name: 'started_at', type: 'timestamp' },
+          { name: 'completed_at', type: 'timestamp' },
+          { name: 'is_completed', type: 'bool' }
+        ]
+      },
+      {
+        name: 'user_answers', domain: 'quiz', x: 400, y: 360,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'attempt_id', type: 'int', key: 'FK' },
+          { name: 'question_id', type: 'int', key: 'FK' },
+          { name: 'selected_option_id', type: 'int', key: 'FK' },
+          { name: 'is_correct', type: 'bool' },
+          { name: 'time_taken_sec', type: 'int' }
+        ]
+      },
+      {
+        name: 'levels', domain: 'user', x: 400, y: 590,
+        fields: [
+          { name: 'level_number', type: 'int', key: 'PK' },
+          { name: 'name', type: 'string' },
+          { name: 'min_exp', type: 'int' },
+          { name: 'badge_icon', type: 'string' },
+          { name: 'reward_desc', type: 'string' }
+        ]
+      },
+      {
+        name: 'users', domain: 'user', x: 400, y: 800,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'username', type: 'string', key: 'UK' },
+          { name: 'name', type: 'string' },
+          { name: 'email', type: 'string', key: 'UK' },
+          { name: 'password_hash', type: 'string' },
+          { name: 'age', type: 'int' },
+          { name: 'gender', type: 'enum' },
+          { name: 'edu_level', type: 'enum' },
+          { name: 'english_level', type: 'enum' },
+          { name: 'level', type: 'int', key: 'FK' },
+          { name: 'total_exp', type: 'int' },
+          { name: 'weekly_exp', type: 'int' },
+          { name: 'monthly_exp', type: 'int' },
+          { name: 'streak_days', type: 'int' },
+          { name: 'avatar_url', type: 'string' },
+          { name: 'bio', type: 'text' },
+          { name: 'is_verified', type: 'bool' },
+          { name: 'created_at', type: 'timestamp' }
+        ]
+      },
+
+      // ─── COLUMN 3 (x=760) ─── User-related tables
+      {
+        name: 'user_words', domain: 'words', x: 760, y: 40,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'user_id', type: 'int', key: 'FK' },
+          { name: 'word_id', type: 'int', key: 'FK' },
+          { name: 'mastery_level', type: 'int' },
+          { name: 'times_seen', type: 'int' },
+          { name: 'times_correct', type: 'int' },
+          { name: 'times_wrong', type: 'int' },
+          { name: 'is_favorite', type: 'bool' },
+          { name: 'user_note', type: 'text' },
+          { name: 'last_reviewed_at', type: 'timestamp' },
+          { name: 'next_review_at', type: 'timestamp' },
+          { name: 'collected_at', type: 'timestamp' }
+        ]
+      },
+      {
+        name: 'user_achievements', domain: 'game', x: 760, y: 460,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'user_id', type: 'int', key: 'FK' },
+          { name: 'achievement_id', type: 'int', key: 'FK' },
+          { name: 'progress', type: 'int' },
+          { name: 'earned_at', type: 'timestamp' }
+        ]
+      },
+      {
+        name: 'daily_activity', domain: 'game', x: 760, y: 670,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'user_id', type: 'int', key: 'FK' },
+          { name: 'date', type: 'date' },
+          { name: 'exp_earned', type: 'int' },
+          { name: 'words_learned', type: 'int' },
+          { name: 'words_reviewed', type: 'int' },
+          { name: 'quizzes_completed', type: 'int' },
+          { name: 'time_spent_sec', type: 'int' }
+        ]
+      },
+      {
+        name: 'exp_logs', domain: 'game', x: 760, y: 950,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'user_id', type: 'int', key: 'FK' },
+          { name: 'game_type_id', type: 'int', key: 'FK' },
+          { name: 'source_id', type: 'int' },
+          { name: 'exp_amount', type: 'int' },
+          { name: 'reason', type: 'string' },
+          { name: 'created_at', type: 'timestamp' }
+        ]
+      },
+      {
+        name: 'leaderboard_history', domain: 'game', x: 760, y: 1200,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'user_id', type: 'int', key: 'FK' },
+          { name: 'period_type', type: 'enum' },
+          { name: 'period_start', type: 'date' },
+          { name: 'period_end', type: 'date' },
+          { name: 'exp_earned', type: 'int' },
+          { name: 'rank', type: 'int' },
+          { name: 'reward_given', type: 'bool' },
+          { name: 'created_at', type: 'timestamp' }
+        ]
+      },
+
+      // ─── COLUMN 4 (x=1120) ─── Parent/lookup tables
+      {
+        name: 'word_topics', domain: 'words', x: 1120, y: 40,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'name', type: 'string' },
+          { name: 'name_uz', type: 'string' },
+          { name: 'icon_url', type: 'string' },
+          { name: 'color', type: 'string' },
+          { name: 'english_level', type: 'enum' },
+          { name: 'total_words', type: 'int' },
+          { name: 'exp_per_word', type: 'int' },
+          { name: 'order_index', type: 'int' },
+          { name: 'is_active', type: 'bool' }
+        ]
+      },
+      {
+        name: 'words', domain: 'words', x: 1120, y: 380,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'topic_id', type: 'int', key: 'FK' },
+          { name: 'english_word', type: 'string' },
+          { name: 'uzbek_translation', type: 'string' },
+          { name: 'part_of_speech', type: 'string' },
+          { name: 'pronunciation', type: 'string' },
+          { name: 'audio_url', type: 'string' },
+          { name: 'example_sentence', type: 'text' },
+          { name: 'example_uz', type: 'text' },
+          { name: 'image_url', type: 'string' },
+          { name: 'english_level', type: 'enum' },
+          { name: 'difficulty', type: 'int' },
+          { name: 'synonyms', type: 'text' },
+          { name: 'created_at', type: 'timestamp' }
+        ]
+      },
+      {
+        name: 'achievements', domain: 'game', x: 1120, y: 830,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'code', type: 'string', key: 'UK' },
+          { name: 'name', type: 'string' },
+          { name: 'name_uz', type: 'string' },
+          { name: 'description', type: 'text' },
+          { name: 'icon_url', type: 'string' },
+          { name: 'tier', type: 'enum' },
+          { name: 'condition_type', type: 'string' },
+          { name: 'condition_value', type: 'int' },
+          { name: 'exp_reward', type: 'int' },
+          { name: 'is_secret', type: 'bool' },
+          { name: 'is_active', type: 'bool' }
+        ]
+      },
+      {
+        name: 'game_types', domain: 'game', x: 1120, y: 1230,
+        fields: [
+          { name: 'id', type: 'int', key: 'PK' },
+          { name: 'code', type: 'string', key: 'UK' },
+          { name: 'name', type: 'string' },
+          { name: 'name_uz', type: 'string' },
+          { name: 'icon_url', type: 'string' },
+          { name: 'is_active', type: 'bool' }
+        ]
+      }
+    ];
+
+    const connections = [
+      // Quiz domain
+      { from: ['categories', 'id'], to: ['quizzes', 'category_id'] },
+      { from: ['quizzes', 'id'], to: ['questions', 'quiz_id'] },
+      { from: ['quizzes', 'id'], to: ['quiz_attempts', 'quiz_id'] },
+      { from: ['questions', 'id'], to: ['question_options', 'question_id'] },
+      { from: ['questions', 'id'], to: ['user_answers', 'question_id'] },
+      { from: ['question_options', 'id'], to: ['user_answers', 'selected_option_id'] },
+      { from: ['quiz_attempts', 'id'], to: ['user_answers', 'attempt_id'] },
+      // User domain
+      { from: ['users', 'id'], to: ['quiz_attempts', 'user_id'] },
+      { from: ['levels', 'level_number'], to: ['users', 'level'] },
+      { from: ['users', 'id'], to: ['user_words', 'user_id'] },
+      { from: ['users', 'id'], to: ['user_achievements', 'user_id'] },
+      { from: ['users', 'id'], to: ['daily_activity', 'user_id'] },
+      { from: ['users', 'id'], to: ['exp_logs', 'user_id'] },
+      { from: ['users', 'id'], to: ['leaderboard_history', 'user_id'] },
+      // Words domain
+      { from: ['word_topics', 'id'], to: ['words', 'topic_id'] },
+      { from: ['words', 'id'], to: ['user_words', 'word_id'] },
+      // Game domain
+      { from: ['achievements', 'id'], to: ['user_achievements', 'achievement_id'] },
+      { from: ['game_types', 'id'], to: ['exp_logs', 'game_type_id'] }
+    ];
+
+    // ─────────────── LAYOUT ───────────────
+
+    const TABLE_WIDTH = 320;
+    const ROW_HEIGHT = 26;
+    const HEADER_HEIGHT = 38;
+    const ns = 'http://www.w3.org/2000/svg';
+
+    function tableHeight(t) {
+      return HEADER_HEIGHT + t.fields.length * ROW_HEIGHT;
+    }
+
+    function fieldY(t, fieldName) {
+      const idx = t.fields.findIndex(f => f.name === fieldName);
+      return t.y + HEADER_HEIGHT + idx * ROW_HEIGHT + ROW_HEIGHT / 2;
+    }
+
+    function findTable(name) {
+      return tables.find(t => t.name === name);
+    }
+
+    // ─────────────── RENDER ───────────────
+
+    function createSvg(tag, attrs) {
+      const el = document.createElementNS(ns, tag);
+      for (const k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+
+    function renderTable(t) {
+      const g = createSvg('g', { class: 'table-group', transform: `translate(${t.x}, ${t.y})` });
+      const h = tableHeight(t);
+      const c = DOMAIN_COLORS[t.domain];
+
+      // Background
+      g.appendChild(createSvg('rect', {
+        x: 0, y: 0, width: TABLE_WIDTH, height: h,
+        rx: 10, class: 'table-bg'
+      }));
+
+      // Header
+      const header = createSvg('rect', {
+        x: 0, y: 0, width: TABLE_WIDTH, height: HEADER_HEIGHT,
+        rx: 10, fill: c.tint, class: 'table-header'
+      });
+      g.appendChild(header);
+      // Fix the bottom rounded corners of header by overlaying a rect
+      g.appendChild(createSvg('rect', {
+        x: 0, y: HEADER_HEIGHT - 10, width: TABLE_WIDTH, height: 10,
+        fill: c.tint, class: 'table-header'
+      }));
+      // Border between header and fields
+      g.appendChild(createSvg('line', {
+        x1: 0, y1: HEADER_HEIGHT, x2: TABLE_WIDTH, y2: HEADER_HEIGHT,
+        stroke: 'var(--border)', 'stroke-width': 1
+      }));
+
+      // Table name
+      const nameText = createSvg('text', {
+        x: 16, y: HEADER_HEIGHT / 2, class: 'table-name', fill: c.text
+      });
+      nameText.textContent = t.name;
+      g.appendChild(nameText);
+
+      // Field count
+      const countText = createSvg('text', {
+        x: TABLE_WIDTH - 16, y: HEADER_HEIGHT / 2,
+        'text-anchor': 'end', class: 'table-count', fill: c.text
+      });
+      countText.textContent = `${t.fields.length} fields`;
+      g.appendChild(countText);
+
+      // Fields
+      t.fields.forEach((f, i) => {
+        const y = HEADER_HEIGHT + i * ROW_HEIGHT;
+
+        // Alternating row background
+        g.appendChild(createSvg('rect', {
+          x: 0, y: y, width: TABLE_WIDTH, height: ROW_HEIGHT,
+          class: 'field-row-bg ' + (i % 2 === 0 ? 'normal' : 'alt')
+        }));
+
+        // Field name
+        const fname = createSvg('text', {
+          x: 16, y: y + ROW_HEIGHT / 2, class: 'field-name-text'
+        });
+        fname.textContent = f.name;
+        g.appendChild(fname);
+
+        // Field type
+        const ftype = createSvg('text', {
+          x: TABLE_WIDTH - (f.key ? 48 : 16), y: y + ROW_HEIGHT / 2,
+          class: 'field-type-text'
+        });
+        ftype.textContent = f.type;
+        g.appendChild(ftype);
+
+        // Key badge
+        if (f.key) {
+          let bg, tx;
+          if (f.key === 'PK') { bg = 'var(--pk-bg)'; tx = 'var(--pk-tx)'; }
+          else if (f.key === 'FK') { bg = 'var(--fk-bg)'; tx = 'var(--fk-tx)'; }
+          else if (f.key === 'UK') { bg = 'var(--uk-bg)'; tx = 'var(--uk-tx)'; }
+
+          g.appendChild(createSvg('rect', {
+            x: TABLE_WIDTH - 38, y: y + (ROW_HEIGHT - 16) / 2,
+            width: 28, height: 16, rx: 3, fill: bg, class: 'key-rect'
+          }));
+          const ktext = createSvg('text', {
+            x: TABLE_WIDTH - 38 + 14, y: y + ROW_HEIGHT / 2,
+            class: 'key-text', fill: tx
+          });
+          ktext.textContent = f.key;
+          g.appendChild(ktext);
+        }
+      });
+
+      // Bottom row separators (lines between fields)
+      for (let i = 1; i < t.fields.length; i++) {
+        const y = HEADER_HEIGHT + i * ROW_HEIGHT;
+        g.appendChild(createSvg('line', {
+          x1: 0, y1: y, x2: TABLE_WIDTH, y2: y,
+          stroke: 'rgba(168, 158, 138, 0.15)', 'stroke-width': 0.5
+        }));
+      }
+
+      return g;
+    }
+
+    function renderConnection(conn) {
+      const fromT = findTable(conn.from[0]);
+      const toT = findTable(conn.to[0]);
+      const fromFY = fieldY(fromT, conn.from[1]);
+      const toFY = fieldY(toT, conn.to[1]);
+
+      // Determine which sides to use
+      const fromLeft = fromT.x;
+      const fromRight = fromT.x + TABLE_WIDTH;
+      const toLeft = toT.x;
+      const toRight = toT.x + TABLE_WIDTH;
+
+      let fromX, toX;
+      if (toLeft >= fromRight) {
+        // target is to the right
+        fromX = fromRight;
+        toX = toLeft;
+      } else if (toRight <= fromLeft) {
+        // target is to the left
+        fromX = fromLeft;
+        toX = toRight;
+      } else {
+        // overlapping horizontally - use right side of leftmost
+        if (fromT.x <= toT.x) {
+          fromX = fromRight;
+          toX = toLeft;
+        } else {
+          fromX = fromLeft;
+          toX = toRight;
+        }
+      }
+
+      // Bezier curve
+      const dx = Math.abs(toX - fromX);
+      const cpOffset = Math.max(60, Math.min(120, dx * 0.5));
+      const fromCpX = fromX + (fromX === fromRight ? cpOffset : -cpOffset);
+      const toCpX = toX + (toX === toLeft ? -cpOffset : cpOffset);
+
+      const path = `M ${fromX} ${fromFY} C ${fromCpX} ${fromFY}, ${toCpX} ${toFY}, ${toX} ${toFY}`;
+
+      const g = createSvg('g', {});
+      g.appendChild(createSvg('path', { d: path, class: 'conn-path' }));
+      g.appendChild(createSvg('circle', { cx: fromX, cy: fromFY, r: 3, class: 'conn-dot' }));
+      g.appendChild(createSvg('circle', { cx: toX, cy: toFY, r: 3, class: 'conn-dot' }));
+      return g;
+    }
+
+    // ─────────────── BOOTSTRAP ───────────────
+
+    const svg = document.getElementById('erd-svg');
+
+    // Calculate canvas dimensions
+    let maxX = 0, maxY = 0;
+    tables.forEach(t => {
+      maxX = Math.max(maxX, t.x + TABLE_WIDTH);
+      maxY = Math.max(maxY, t.y + tableHeight(t));
+    });
+    const W = maxX + 60;
+    const H = maxY + 60;
+
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+    // Connections first (so they sit under tables)
+    const connGroup = createSvg('g', { class: 'connections-layer' });
+    connections.forEach(c => connGroup.appendChild(renderConnection(c)));
+    svg.appendChild(connGroup);
+
+    // Tables on top
+    const tablesGroup = createSvg('g', { class: 'tables-layer' });
+    tables.forEach(t => tablesGroup.appendChild(renderTable(t)));
+    svg.appendChild(tablesGroup);
+  </script>
+</body>
+</html>
