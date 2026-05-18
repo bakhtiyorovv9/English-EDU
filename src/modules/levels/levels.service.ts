@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Level } from './models/level.model';
-import { User } from '../users/models/user.model';
 
 @Injectable()
 export class LevelService {

@@ -4,6 +4,7 @@ import { validate } from '@/core/config/env.validation';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './modules/users/users.module';
 import { LevelsModule } from './modules/levels/levels.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { LevelsModule } from './modules/levels/levels.module';
         force: process.env.NODE_ENV === `development`
       },
       autoLoadModels: true,
-    }),
+    }),AuthModule,
     UsersModule,
     LevelsModule
   ],

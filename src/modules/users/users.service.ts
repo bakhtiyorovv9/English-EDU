@@ -5,14 +5,17 @@ import { Level } from '../levels/models/level.model';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User) private readonly model: typeof User) { }
-    
-    async getAll() {
-        const user = await this.model.findAll({include:[Level]})
+  constructor(@InjectModel(User) private readonly model: typeof User) {}
 
-        return {
-            success: true,
-            data:user
-        }
-    }
+  async getAll() {
+    const user = await this.model.findAll({
+      attributes: { exclude: ['password'] },
+      include: [Level],
+    });
+
+    return {
+      success: true,
+      data: user,
+    };
+  }
 }

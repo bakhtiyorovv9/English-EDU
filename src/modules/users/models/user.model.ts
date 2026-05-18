@@ -7,13 +7,13 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Level } from '../../levels/models/level.model';
+import { UserRole } from '@/core/constants/constants';
 
 export enum Gender {
   MALE = 'male',
   FEMALE = 'female',
   OTHER = 'other',
 }
-
 export enum EduLevel {
   SCHOOL = 'school',
   COLLEGE = 'college',
@@ -21,7 +21,6 @@ export enum EduLevel {
   MASTER = 'master',
   PHD = 'phd',
 }
-
 export enum EnglishLevel {
   A1 = 'A1',
   A2 = 'A2',
@@ -31,13 +30,32 @@ export enum EnglishLevel {
   C2 = 'C2',
 }
 
+export interface UserCreationAttrs {
+  username: string;
+  name: string;
+  email: string;
+  password: string;
+  age?: number;
+  gender?: Gender;
+  edu_level?: EduLevel;
+  english_level?: EnglishLevel;
+  role?: UserRole;
+  level?: number;
+  avatar_url?: string;
+  is_verified?: boolean;
+  total_exp?: number;
+  weekly_exp?: number;
+  monthly_exp?: number;
+  streak_days?: number;
+}
+
 @Table({
   tableName: 'users',
   timestamps: true,
   paranoid: true,
   underscored: true,
 })
-export class User extends Model<User> {
+export class User extends Model<User, UserCreationAttrs> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -60,13 +78,20 @@ export class User extends Model<User> {
   declare email: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
-  declare password_hash: string;
+  declare password: string;
 
   @Column({ type: DataType.INTEGER })
   declare age: number;
 
   @Column({ type: DataType.ENUM(...Object.values(Gender)) })
   declare gender: Gender;
+
+  @Column({
+    type: DataType.ENUM(...Object.values(UserRole)),
+    defaultValue: UserRole.USER,
+    allowNull: false,
+  })
+  declare role: UserRole;
 
   @Column({ type: DataType.ENUM(...Object.values(EduLevel)) })
   declare edu_level: EduLevel;
