@@ -5,6 +5,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './modules/users/users.module';
 import { LevelsModule } from './modules/levels/levels.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { PagesModule } from './modules/pages/pages.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { AuthModule } from './modules/auth/auth.module';
         force: process.env.NODE_ENV === `development`
       },
       autoLoadModels: true,
-    }),AuthModule,
+    }),
+    PagesModule, AuthModule,
     UsersModule,
     LevelsModule
   ],

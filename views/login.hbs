@@ -1,0 +1,55 @@
+{{!< layout}}
+<div class="shell split">
+  <main class="pane content first fade">
+    {{> mstrip mlabel="Kirish"}}
+    <div class="content-inner">
+      <div class="stephead r r1" style="margin-top:8px">
+        <a class="backbtn" href="/" aria-label="Orqaga">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="stepmeta"><span class="q">Akkauntga kirish</span></div>
+      </div>
+
+      <form class="center" method="post" action="/login">
+        <div class="eyebrow r r2">Xush kelibsiz</div>
+        <h2 class="h-title r r3" style="margin-top:14px">Davom <em>etamiz</em></h2>
+        <p class="h-desc r r3">Streak&lsquo;ingiz va progressingiz sizni kutmoqda.</p>
+
+        <div class="social r r4">
+          <span class="soc">Google</span>
+          <span class="soc">Apple</span>
+          <span class="soc">Telegram</span>
+        </div>
+        <div class="divider r r4"><span>Email bilan</span></div>
+
+        <div class="field r r5">
+          <label>Email</label>
+          <div class="inwrap"><input name="email" type="email" placeholder="siz@gmail.com" required /></div>
+        </div>
+        <div class="field r r5">
+          <label>Parol</label>
+          <div class="inwrap">
+            <input name="password" type="password" data-pw placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required />
+            <button type="button" class="eye" data-eye aria-label="parolni ko'rsatish">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div style="margin-top:14px"><a class="btn plain" style="padding:2px 0;font-size:13px;color:var(--ink-2)" href="#">Parolni unutdingizmi?</a></div>
+
+        <button type="submit" class="btn dark lg block r r6" style="margin-top:24px">Kirish
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p class="h-desc r r6" style="margin-top:18px;font-size:13.5px;text-align:center">
+          Akkauntingiz yo&lsquo;qmi? <a href="/onboarding/level"><b style="color:var(--ink)">Ro&lsquo;yxatdan o&lsquo;ting</b></a>
+        </p>
+      </form>
+
+      <div class="foot">
+        <div class="meta">&copy; <b>ENGLYX 2026</b> &middot; MAXFIYLIK</div>
+        <div class="lang"><b>UZ</b> &middot; RU &middot; EN</div>
+      </div>
+    </div>
+  </main>
+  {{> hero step=true}}
+</div>

@@ -1,0 +1,26 @@
+{{!< layout}}
+<div class="shell split">
+  <main class="pane content first fade">
+    {{> mstrip mlabel="Tayyor"}}
+    <div class="content-inner">
+      <div class="done">
+        <div class="ring r r1">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <div class="eyebrow r r2">Hammasi tayyor</div>
+        <h2 class="h-title r r3" style="margin-top:12px">Xush kelibsiz, <em>{{firstName}}</em></h2>
+        <p class="h-desc r r4" style="margin:14px auto 0;text-align:center">
+          Daraja <b>{{level}}</b> &middot; Maqsad <b>{{goalLabel}}</b>. Birinchi darsingiz tayyor &mdash; streak&lsquo;ni bugun boshlang.
+        </p>
+        <a class="btn dark lg r r5" style="margin-top:30px" href="/">Darsni boshlash
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div class="foot">
+        <div class="meta">&copy; <b>ENGLYX 2026</b></div>
+        <div class="lang"><b>UZ</b> &middot; RU &middot; EN</div>
+      </div>
+    </div>
+  </main>
+  {{> hero step=true}}
+</div>

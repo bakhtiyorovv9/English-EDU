@@ -1,0 +1,50 @@
+{{!< layout}}
+<div class="shell split">
+  <main class="pane content first fade">
+    {{> mstrip mlabel="Qadam 3 / 4"}}
+    <form class="content-inner" method="get" action="/onboarding/account">
+      <input type="hidden" name="level" value="{{level}}" />
+      <input type="hidden" name="goal" value="{{goal}}" data-goal-input />
+
+      <div class="stephead r r1">
+        <a class="backbtn" href="/onboarding/level?level={{level}}" aria-label="Orqaga">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="stepmeta">
+          <span class="q">Qadam {{step}} / {{total}}</span>
+          <div class="dashes">
+            <span class="dash on"></span><span class="dash on"></span><span class="dash on"></span><span class="dash"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="center">
+        <h2 class="h-title r r2">Maqsadingizni <em>belgilang</em></h2>
+        <p class="h-desc r r2">Nima uchun ingliz tili kerak? Rejani shunga moslab tuzamiz.</p>
+
+        <div class="goals">
+          {{#each goals}}
+          <button type="button" class="goal r r3{{#if selected}} on{{/if}}" data-goal="{{this.id}}">
+            <div class="ico">{{this.ico}}</div>
+            <h4>{{this.t}}</h4>
+            <p>{{this.d}}</p>
+          </button>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="navrow">
+        <a class="btn plain" href="/onboarding/level?level={{level}}">&larr; Orqaga</a>
+        <button type="submit" class="btn dark lg">Davom etish
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="foot bare">
+        <div class="meta">&copy; <b>ENGLYX 2026</b> &middot; MAXFIYLIK &middot; SHARTLAR</div>
+        <div class="lang"><b>UZ</b> &middot; RU &middot; EN</div>
+      </div>
+    </form>
+  </main>
+  {{> hero step=true}}
+</div>

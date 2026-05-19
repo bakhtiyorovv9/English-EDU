@@ -1,0 +1,84 @@
+{{!< layout}}
+<div class="shell split">
+  <main class="pane content first fade">
+    {{> mstrip mlabel="Qadam 4 / 4"}}
+    <form class="content-inner" method="post" action="/onboarding/account" data-account-form>
+      <input type="hidden" name="level" value="{{level}}" />
+      <input type="hidden" name="goal" value="{{goal}}" />
+
+      <div class="stephead r r1">
+        <a class="backbtn" href="/onboarding/goal?level={{level}}&goal={{goal}}" aria-label="Orqaga">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="stepmeta">
+          <span class="q">Qadam {{step}} / {{total}}</span>
+          <div class="dashes">
+            <span class="dash on"></span><span class="dash on"></span><span class="dash on"></span><span class="dash on"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="center">
+        <h2 class="h-title r r2">Akkaunt <em>yarating</em></h2>
+        <p class="h-desc r r2">Progressingiz, streak&lsquo;ingiz va so&lsquo;zlar yig&lsquo;ilmasi saqlanib qoladi.</p>
+
+        <div class="social r r3">
+          <span class="soc">Google</span>
+          <span class="soc">Apple</span>
+          <span class="soc">Telegram</span>
+        </div>
+        <div class="divider r r3"><span>Email bilan</span></div>
+
+        <div class="field r r4">
+          <label>Ism</label>
+          <div class="inwrap"><input name="name" placeholder="Aziz Karimov" required /></div>
+        </div>
+        <div class="field r r4">
+          <label>Username</label>
+          <div class="inwrap">
+            <input name="username" data-user placeholder="azizk" autocomplete="off" />
+            <span class="tag" data-user-tag hidden>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              bo&lsquo;sh
+            </span>
+          </div>
+        </div>
+        <div class="field r r5">
+          <label>Email</label>
+          <div class="inwrap"><input name="email" type="email" placeholder="aziz@gmail.com" required /></div>
+        </div>
+        <div class="field r r5">
+          <label>Parol</label>
+          <div class="inwrap">
+            <input name="password" type="password" data-pw placeholder="Kamida 8 belgi" required />
+            <span class="tag" data-pw-tag style="right:42px" hidden>kuchli</span>
+            <button type="button" class="eye" data-eye aria-label="parolni ko'rsatish">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <label class="check r r6" data-agree-wrap>
+          <span class="box">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </span>
+          <input type="checkbox" name="agree" data-agree style="display:none" required />
+          <span><b>Foydalanish shartlari</b>ga va <b>Maxfiylik siyosati</b>ga roziman.</span>
+        </label>
+      </div>
+
+      <div class="navrow">
+        <a class="btn plain" href="/onboarding/goal?level={{level}}&goal={{goal}}">&larr; Orqaga</a>
+        <button type="submit" class="btn dark lg" data-submit>Akkaunt yaratish
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="foot bare">
+        <div class="meta">&copy; <b>ENGLYX 2026</b> &middot; MAXFIYLIK &middot; SHARTLAR</div>
+        <div class="lang"><b>UZ</b> &middot; RU &middot; EN</div>
+      </div>
+    </form>
+  </main>
+  {{> hero step=true}}
+</div>

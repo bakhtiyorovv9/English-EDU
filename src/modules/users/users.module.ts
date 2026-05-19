@@ -6,8 +6,8 @@ import { UserService } from './users.service';
 import { Level } from '../levels/models/level.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User,Level])],
+  imports: [SequelizeModule.forFeature([User, Level])],
   controllers: [UsersController],
-  providers:[UserService]
+  providers: [UserService],
 })
 export class UsersModule {}
