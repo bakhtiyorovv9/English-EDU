@@ -31,6 +31,21 @@
           </button>
           {{/each}}
         </div>
+
+        <!-- Boshqa: variantlar yonida, foydalanuvchi o'zi yozadi -->
+        <button type="button" class="goal r r4{{#if isOther}} on{{/if}}" data-goal="other" style="margin-top:12px;border-style:dashed">
+          <div class="ico">✏️</div>
+          <h4>Boshqa</h4>
+          <p>O‘zingiz yozing</p>
+        </button>
+
+        <!-- Matn maydoni doim ko'rinadi; bosilsa "Boshqa" o'zi tanlanadi -->
+        <div class="field" data-other-field>
+          <label>Boshqa maqsad — o‘zingiz yozing</label>
+          <div class="inwrap">
+            <input name="goal_text" data-goal-text placeholder="Masalan: nutq tezligini oshirish" maxlength="160" value="{{goalText}}" />
+          </div>
+        </div>
       </div>
 
       <div class="navrow">

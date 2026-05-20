@@ -17,15 +17,32 @@
 
   /* ---- Maqsad tanlash ---- */
   var goalInput = document.querySelector('[data-goal-input]');
+  var goalTextInput = document.querySelector('[data-goal-text]');
+  var otherCard = document.querySelector('[data-goal="other"]');
+
   document.querySelectorAll('[data-goal]').forEach(function (card) {
     card.addEventListener('click', function () {
       document.querySelectorAll('[data-goal]').forEach(function (c) {
         c.classList.remove('on');
       });
       card.classList.add('on');
-      if (goalInput) goalInput.value = card.getAttribute('data-goal');
+      var g = card.getAttribute('data-goal');
+      if (goalInput) goalInput.value = g;
+      // Boshqa kartadan boshqasi tanlansa, matnni tozala
+      if (goalTextInput && g !== 'other') {
+        goalTextInput.value = '';
+      }
     });
   });
+
+  // Matn maydoniga bosilsa yoki yozilsa, "Boshqa" o'zi tanlanadi
+  if (goalTextInput && otherCard) {
+    function pickOther() {
+      if (!otherCard.classList.contains('on')) otherCard.click();
+    }
+    goalTextInput.addEventListener('focus', pickOther);
+    goalTextInput.addEventListener('input', pickOther);
+  }
 
   /* ---- Parolni ko'rsatish/yashirish ---- */
   document.querySelectorAll('[data-eye]').forEach(function (btn) {
@@ -101,7 +118,12 @@
     var name = (form.querySelector('[name="name"]') || {}).value || '';
     var email = (form.querySelector('[name="email"]') || {}).value || '';
     var pw = pwMain ? pwMain.value : '';
-    var ok = name.trim() && email.indexOf('@') > 0 && pw.length >= 8 && agree && agree.checked;
+    var ok =
+      name.trim() &&
+      email.indexOf('@') > 0 &&
+      pw.length >= 8 &&
+      agree &&
+      agree.checked;
     submit.disabled = !ok;
     submit.setAttribute('aria-disabled', String(!ok));
   }

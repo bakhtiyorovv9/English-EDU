@@ -14,12 +14,12 @@ export enum Gender {
   FEMALE = 'female',
   OTHER = 'other',
 }
-export enum EduLevel {
-  SCHOOL = 'school',
-  COLLEGE = 'college',
-  BACHELOR = 'bachelor',
-  MASTER = 'master',
-  PHD = 'phd',
+
+export enum Goal {
+  IELTS = 'ielts',
+  TRAVEL = 'travel',
+  WORK = 'work',
+  GENERAL = 'general',
 }
 export enum EnglishLevel {
   A1 = 'A1',
@@ -37,8 +37,9 @@ export interface UserCreationAttrs {
   password: string;
   age?: number;
   gender?: Gender;
-  edu_level?: EduLevel;
   english_level?: EnglishLevel;
+  goal?: Goal;
+  goal_text?: string;
   role?: UserRole;
   level?: number;
   avatar_url?: string;
@@ -93,14 +94,17 @@ export class User extends Model<User, UserCreationAttrs> {
   })
   declare role: UserRole;
 
-  @Column({ type: DataType.ENUM(...Object.values(EduLevel)) })
-  declare edu_level: EduLevel;
-
   @Column({ type: DataType.ENUM(...Object.values(EnglishLevel)) })
   declare english_level: EnglishLevel;
 
+  @Column({ type: DataType.ENUM(...Object.values(Goal)) })
+  declare goal: Goal;
+
+  @Column({ type: DataType.STRING(160) })
+  declare goal_text: string;
+
   @ForeignKey(() => Level)
-  @Column({ type: DataType.INTEGER })
+  @Column({ type: DataType.INTEGER, defaultValue: 1 })
   declare level: number;
 
   @BelongsTo(() => Level)

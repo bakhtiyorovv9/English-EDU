@@ -8,6 +8,7 @@ import {
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
+import { AuthService } from '../auth/auth.service';
 
 const LEVELS = [
   { id: 'A1', t: 'Beginner', q: 'Salom! Mening ismim…' },
@@ -43,6 +44,8 @@ const sel = <T extends { id: string }>(l: T[], s: string) =>
 
 @Controller()
 export class PagesController {
+  constructor(private readonly authService: AuthService) {}
+
   @Get()
   @Render('welcome')
   welcome() {
@@ -75,9 +78,14 @@ export class PagesController {
     };
   }
 
+  /* >>> goal_text + isOther qo'shildi <<< */
   @Get('onboarding/goal')
   @Render('goal')
-  goal(@Query('level') level = 'B1', @Query('goal') goal = 'ielts') {
+  goal(
+    @Query('level') level = 'B1',
+    @Query('goal') goal = 'ielts',
+    @Query('goal_text') goalText = '',
+  ) {
     return {
       title: 'Maqsad — Englyx',
       screen: 'goal',
@@ -86,12 +94,20 @@ export class PagesController {
       level,
       goal,
       goals: sel(GOALS, goal),
+      isOther: goal === 'other',
+      goalText,
     };
   }
 
+  /* >>> goalText qo'shildi <<< */
   @Get('onboarding/account')
   @Render('account')
-  account(@Query('level') level = 'B1', @Query('goal') goal = 'ielts') {
+  account(
+    @Query('level') level = 'B1',
+    @Query('goal') goal = 'ielts',
+    @Query('goal_text') goalText = '',
+    @Query('error') error?: string,
+  ) {
     return {
       title: 'Ro‘yxat — Englyx',
       screen: 'account',
@@ -99,33 +115,75 @@ export class PagesController {
       total: 4,
       level,
       goal,
+      goalText,
+      error,
     };
   }
 
   @Post('onboarding/account')
-  createAccount(@Body() body: any, @Res() res: Response) {
-    const q = new URLSearchParams({
-      name: body?.name || 'do‘stim',
-      level: body?.level || 'B1',
-      goal: body?.goal || 'ielts',
-    });
-    return res.redirect('/done?' + q.toString());
+  async createAccount(@Body() body: any, @Res() res: Response) {
+    try {
+      const isOther = body.goal === 'other';
+
+      const { user, accessToken, refreshToken } =
+        await this.authService.createAccount({
+          name: body.name,
+          username: body.username,
+          email: body.email,
+          password: body.password,
+          english_level: body.level,
+          goal: isOther ? undefined : body.goal,
+          goal_text: isOther ? body.goal_text || null : null,
+        } as any);
+
+      res.cookie('accessToken', accessToken, {
+        signed: true,
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 15 * 60 * 1000,
+      });
+      res.cookie('RefreshToken', refreshToken, {
+        signed: true,
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      const q = new URLSearchParams({
+        name: user.name,
+        level: body.level || 'B1',
+        goal: body.goal || 'ielts',
+        goal_text: isOther ? body.goal_text || '' : '',
+      });
+      return res.redirect('/done?' + q.toString());
+    } catch (e: any) {
+      const q = new URLSearchParams({
+        level: body.level || 'B1',
+        goal: body.goal || 'ielts',
+        error: e?.message || 'Xatolik',
+      });
+      return res.redirect('/onboarding/account?' + q.toString());
+    }
   }
 
+  /* >>> goal_text qabul qiladi va custom matnni ko'rsatadi <<< */
   @Get('done')
   @Render('done')
   done(
     @Query('name') name = 'do‘stim',
     @Query('level') level = 'B1',
     @Query('goal') goal = 'ielts',
+    @Query('goal_text') goalText = '',
   ) {
     const g = GOALS.find((x) => x.id === goal);
+    const goalLabel =
+      goal === 'other' && goalText ? goalText : g ? g.t : 'IELTS / Imtihon';
     return {
       title: 'Tayyor — Englyx',
       screen: 'done',
       firstName: String(name).split(' ')[0],
       level,
-      goalLabel: g ? g.t : 'IELTS / Imtihon',
+      goalLabel,
     };
   }
 }

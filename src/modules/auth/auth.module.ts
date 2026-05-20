@@ -6,11 +6,12 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '../users/models/user.model';
 
 @Module({
-    
-    imports: [SequelizeModule.forFeature([User]),JwtModule.register({
-      global:true
-  })],
+  imports: [
+    SequelizeModule.forFeature([User]),
+    JwtModule.register({ global: true }),
+  ],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}

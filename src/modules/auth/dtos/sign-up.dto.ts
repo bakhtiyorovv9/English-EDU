@@ -8,8 +8,9 @@ import {
   Matches,
   Min,
   Max,
+  MaxLength,
 } from 'class-validator';
-import { EduLevel, EnglishLevel, Gender } from '../../users/models/user.model';
+import { EnglishLevel, Gender, Goal } from '../../users/models/user.model';
 
 export class SignUpDto {
   @IsString()
@@ -45,10 +46,15 @@ export class SignUpDto {
   gender?: Gender;
 
   @IsOptional()
-  @IsEnum(EduLevel)
-  edu_level?: EduLevel;
-
-  @IsOptional()
   @IsEnum(EnglishLevel)
   english_level?: EnglishLevel;
+
+  @IsOptional()
+  @IsEnum(Goal)
+  goal?: Goal;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(160)
+  goal_text?: string;
 }
