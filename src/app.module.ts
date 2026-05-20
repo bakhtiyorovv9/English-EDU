@@ -14,23 +14,26 @@ import { PagesModule } from './modules/pages/pages.module';
       validate: validate,
     }),
     SequelizeModule.forRoot({
+      uri: process.env.DATABASE_URL,
       dialect: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      },
       logging: console.log,
       synchronize: true,
       sync: {
         alter: true,
-        force: process.env.NODE_ENV === `development`
+        force: process.env.NODE_ENV === `development`,
       },
       autoLoadModels: true,
     }),
-    PagesModule, AuthModule,
+    PagesModule,
+    AuthModule,
     UsersModule,
-    LevelsModule
+    LevelsModule,
   ],
 })
 export class AppModule {}
