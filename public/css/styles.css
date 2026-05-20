@@ -29,13 +29,21 @@ button{font-family:inherit}
 .pane.first{order:1}
 
 /* dark hero */
+/* dark hero */
 .hero{background:var(--espresso);color:var(--cream-d);padding:clamp(28px,4vw,56px);overflow:hidden}
 .hero::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(120% 80% at 78% 8%,rgba(200,119,46,.30),transparent 55%),
              radial-gradient(90% 70% at 20% 100%,rgba(60,48,38,.55),transparent 60%)}
 .hero>*{position:relative;z-index:1}
 .hero-top{display:flex;align-items:center;gap:13px}
-.hero-body{margin-top:auto;padding-top:48px}
+.hero-body{margin:auto 0;padding-top:48px}
+
+/* Desktop: panel grid bilan cho'zilmaydi — 100vh, sticky.
+   Logo tepada, qolgan matn vertikal markazda. Hamma sahifada bir xil. */
+@media(min-width:921px){
+  .hero{position:sticky;top:0;height:100vh;align-self:start}
+}
+
 .hero-title{font-weight:600;line-height:1.02;letter-spacing:-.018em;font-size:clamp(40px,5.4vw,76px);margin:18px 0 0}
 .hero-title em{font-style:italic;font-weight:400;color:var(--cream-d)}
 .hero-sub{font-family:'Fraunces',serif;font-style:italic;color:var(--cream-d2);
@@ -50,7 +58,20 @@ button{font-family:inherit}
   justify-content:center;font-size:12px;font-weight:700;color:#fff}
 .quote q{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--cream-d);line-height:1.5;quotes:none}
 .quote .who{font-size:10.5px;letter-spacing:.16em;color:var(--cream-d2);text-transform:uppercase;margin-top:9px}
-
+.hero-title{font-weight:600;line-height:1.02;letter-spacing:-.018em;font-size:clamp(40px,5.4vw,76px);margin:18px 0 0}
+.hero-title em{font-style:italic;font-weight:400;color:var(--cream-d)}
+.hero-sub{font-family:'Fraunces',serif;font-style:italic;color:var(--cream-d2);
+  font-size:clamp(15px,1.4vw,19px);margin-top:22px;max-width:30ch;line-height:1.5}
+.stats{display:flex;gap:clamp(28px,4vw,52px);margin-top:38px}
+.stat .n{font-family:'Fraunces',serif;font-size:clamp(30px,3.4vw,44px);font-weight:500;letter-spacing:-.02em}
+.stat .l{font-size:10.5px;letter-spacing:.2em;color:var(--cream-d2);text-transform:uppercase;margin-top:2px}
+.quote{margin-top:42px;padding:18px 20px;border:1px solid var(--line-d);border-radius:16px;
+  background:rgba(239,231,215,.035);display:flex;gap:14px;align-items:flex-start}
+.av{width:36px;height:36px;border-radius:50%;flex:none;
+  background:linear-gradient(140deg,#D98A3D,#A85A22);display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.quote q{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--cream-d);line-height:1.5;quotes:none}
+.quote .who{font-size:10.5px;letter-spacing:.16em;color:var(--cream-d2);text-transform:uppercase;margin-top:9px}
 /* brand */
 .mark{width:38px;height:38px;border-radius:11px;flex:none;background:var(--paper);color:var(--ink);
   display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:20px}
@@ -213,7 +234,7 @@ button{font-family:inherit}
   .stats{gap:30px;margin-top:26px}
   .content{padding:26px 22px 34px}
   .center{padding:26px 0}
-  .hero.step-aside{display:none}
+  /* .hero.step-aside{display:none} */
   .mstrip{display:flex;align-items:center;justify-content:space-between;
     background:var(--espresso);color:var(--cream-d);padding:16px 22px}
   .mstrip .wordmark{font-size:18px}
